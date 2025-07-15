@@ -15,7 +15,7 @@ public class CuentaBancaria {
 
     @ManyToOne
     @JoinColumn(name="usuario_id")
-    private Usuario usuario;
+    private User usuario;
 
     public Long getId() {
         return id;
@@ -41,11 +41,11 @@ public class CuentaBancaria {
         this.saldo = saldo;
     }
 
-    public Usuario getUsuario() {
+    public User getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(User usuario) {
         this.usuario = usuario;
     }
 }

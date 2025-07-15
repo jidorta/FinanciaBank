@@ -1,7 +1,7 @@
 package com.ibandorta.FinanciaBank.FinanciaBank.controller;
 
-import com.ibandorta.FinanciaBank.FinanciaBank.model.Usuario;
-import com.ibandorta.FinanciaBank.FinanciaBank.service.UsuarioService;
+import com.ibandorta.FinanciaBank.FinanciaBank.model.User;
+import com.ibandorta.FinanciaBank.FinanciaBank.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,20 +10,20 @@ import java.util.List;
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    private final UsuarioService usuarioService;
+    private final UserService usuarioService;
 
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UserService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
     @GetMapping
-    public List<Usuario> obtenerTodosLosUsuarios(){
+    public List<User> obtenerTodosLosUsuarios(){
         return usuarioService.obtenerTodosLosUsuarios();
     }
 
     @PostMapping
-    public Usuario crearUsuario(@RequestBody Usuario usuario){
+    public User crearUsuario(@RequestBody User usuario){
         return usuarioService.crearUsuario(usuario);
     }
 

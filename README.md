@@ -1,17 +1,22 @@
-# FinanciaBank 🚀
+FinanciaBank
+API REST sencilla para gestionar usuarios y acceder a datos bancarios, construida con Java y Spring Boot.
 
-Sistema bancario completo con arquitectura limpia y enfoque profesional.
+Qué hace por ahora
+Registro y login de usuarios usando JWT para seguridad
 
-## ✨ Fase 1 (MVP)
-- Registro y gestión de usuarios.
-- Cuentas bancarias.
-- Movimientos bancarios.
-- Autenticación inicial (login simple).
-- Arquitectura limpia (Controller, Service, Repository, DTO, Mapper).
+Protección de rutas con Spring Security 6
 
-Funcionalidades actuales
-Registro y login de usuarios con JWT
+Endpoint /api/cuenta-bancaria accesible solo para usuarios autenticados
 
-Seguridad con Spring Security 6
+Tecnologías que uso
+Java 17+
 
-Endpoint protegido /api/cuenta-bancaria que solo usuarios autenticados pueden acceder
+Spring Boot 3
+
+Spring Security 6
+
+JWT (JSON Web Tokens)
+
+Maven
+
+Postgresql en Docker (incluido fichero yaml)

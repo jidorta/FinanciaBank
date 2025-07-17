@@ -69,6 +69,15 @@ public class CuentaBancariaController {
         return userService.crearUsuario(user);
     }
 
+    @PostMapping("/deposito")
+    public ResponseEntity<String>depositar(
+            @RequestParam Long cuentaId,
+            @RequestParam BigDecimal monto
+    ){
+        cuentaBancariaService.depositar(cuentaId,monto);
+        return ResponseEntity.ok("Deposito realizado con éxito.");
+    }
+
 }
 
 

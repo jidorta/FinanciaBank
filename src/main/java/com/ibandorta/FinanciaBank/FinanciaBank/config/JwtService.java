@@ -26,7 +26,7 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         CustomUserDetails customUser = (CustomUserDetails) userDetails;
-        String role = customUser.getUser().getRole().name(); // Accede a tu entidad User
+        String role = customUser.getUser().getRoles().toString(); // Accede a tu entidad User
 
         return Jwts.builder()
                 .setSubject(customUser.getUsername())

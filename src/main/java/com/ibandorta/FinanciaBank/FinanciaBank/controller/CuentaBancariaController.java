@@ -2,7 +2,9 @@ package com.ibandorta.FinanciaBank.FinanciaBank.controller;
 
 import com.ibandorta.FinanciaBank.FinanciaBank.dto.CuentaBancariaResponseDTO;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.CuentaBancaria;
+import com.ibandorta.FinanciaBank.FinanciaBank.model.Role;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.User;
+import com.ibandorta.FinanciaBank.FinanciaBank.model.UserRole;
 import com.ibandorta.FinanciaBank.FinanciaBank.service.CuentaBancariaService;
 import com.ibandorta.FinanciaBank.FinanciaBank.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -65,8 +68,14 @@ public class CuentaBancariaController {
 
     }
 
-    public User crearUsuario(@RequestBody User user){
-        return userService.crearUsuario(user);
+    @PostMapping("/registrar")
+    public User crearUsuario(@RequestBody User user) {
+        Set<Role> roles = user.getRoles()
+                .stream()
+                .map(UserRole::getName) // Aquí sacamos el enum Role
+                .collect(Collectors.toSet());
+
+        return userService.crearUsuario(user, roles);
     }
 
     @PostMapping("/deposito")

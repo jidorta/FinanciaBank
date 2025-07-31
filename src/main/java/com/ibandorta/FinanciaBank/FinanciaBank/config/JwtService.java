@@ -2,18 +2,22 @@ package com.ibandorta.FinanciaBank.FinanciaBank.config;
 
 import com.ibandorta.FinanciaBank.FinanciaBank.model.CustomUserDetails;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.User;
+import com.ibandorta.FinanciaBank.FinanciaBank.model.UserRole;
 import com.ibandorta.FinanciaBank.FinanciaBank.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.apache.catalina.Role;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -26,13 +30,16 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         CustomUserDetails customUser = (CustomUserDetails) userDetails;
-        String role = customUser.getUser().getRoles().toString(); // Accede a tu entidad User
+
+        String role = customUser.getUser().getRoles().stream()
+                .map(userRole -> userRole.getName().name()) // aquí NO hay conflicto
+                .collect(Collectors.joining(","));
 
         return Jwts.builder()
                 .setSubject(customUser.getUsername())
                 .claim("role", role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 horas
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24h
                 .signWith(getSignigKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

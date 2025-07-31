@@ -11,24 +11,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @GetMapping("/public")
-    public ResponseEntity<String>publicEndpoint(){
-        return ResponseEntity.ok("Endpoint public sin autenticación");
+    public ResponseEntity<String> publicEndpoint() {
+        return ResponseEntity.ok("Endpoint público sin autenticación");
     }
 
     @GetMapping("/user")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String>userEndpoint(){
-        return ResponseEntity.ok("Acceso permitido a User");
+    public ResponseEntity<String> userEndpoint() {
+        return ResponseEntity.ok("Acceso permitido a USER");
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN'")
-    public ResponseEntity<String>adminEndpoint(){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> adminEndpoint() {
         return ResponseEntity.ok("Acceso permitido solo a ADMIN");
     }
+
     @GetMapping("/both")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<String>bothEndpoint(){
+    public ResponseEntity<String> bothEndpoint() {
         return ResponseEntity.ok("Acceso para USER o ADMIN");
     }
 

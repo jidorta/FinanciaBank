@@ -1,6 +1,6 @@
 package com.ibandorta.FinanciaBank.FinanciaBank.controller;
 
-import com.ibandorta.FinanciaBank.FinanciaBank.dto.CuentaBancariaResponseDTO;
+import com.ibandorta.FinanciaBank.FinanciaBank.dto.CuentaBancariaResponseRecord;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.CuentaBancaria;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.Role;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.User;
@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -29,12 +28,12 @@ public class CuentaBancariaController {
     private final UserService userService;
 
     @GetMapping
-    public List<CuentaBancariaResponseDTO>obtenerCuentas(@AuthenticationPrincipal UserDetails userDetails){
+    public List<CuentaBancariaResponseRecord>obtenerCuentas(@AuthenticationPrincipal UserDetails userDetails){
         User usuario = userService.findByUsername(userDetails.getUsername());
 
         return cuentaBancariaService.obtenerCuentasDeUsuario(usuario)
                 .stream()
-                .map(cuenta ->CuentaBancariaResponseDTO.builder()
+                .map(cuenta -> CuentaBancariaResponseRecord.builder()
                         .iban(cuenta.getIban())
                         .saldo(cuenta.getSaldo())
                         .moneda(cuenta.getMoneda())
@@ -46,7 +45,7 @@ public class CuentaBancariaController {
     }
 
     @PostMapping
-    public CuentaBancariaResponseDTO crearCuenta(@AuthenticationPrincipal UserDetails userDetails){
+    public CuentaBancariaResponseRecord crearCuenta(@AuthenticationPrincipal UserDetails userDetails){
         User usuario = userService.findByUsername(userDetails.getUsername());
 
         CuentaBancaria nuevaCuenta = CuentaBancaria.builder()
@@ -59,23 +58,13 @@ public class CuentaBancariaController {
 
         CuentaBancaria guardada = cuentaBancariaService.guardarCuenta(nuevaCuenta);
 
-        return CuentaBancariaResponseDTO.builder()
+        return CuentaBancariaResponseRecord.builder()
                 .iban(guardada.getIban())
                 .saldo(guardada.getSaldo())
                 .moneda(guardada.getMoneda())
                 .activa(guardada.isActiva())
                 .build();
 
-    }
-
-    @PostMapping("/registrar")
-    public User crearUsuario(@RequestBody User user) {
-        Set<Role> roles = user.getRoles()
-                .stream()
-                .map(UserRole::getName) // Aquí sacamos el enum Role
-                .collect(Collectors.toSet());
-
-        return userService.crearUsuario(user, roles);
     }
 
     @PostMapping("/deposito")
@@ -86,7 +75,6 @@ public class CuentaBancariaController {
         cuentaBancariaService.depositar(cuentaId,monto);
         return ResponseEntity.ok("Deposito realizado con éxito.");
     }
-
 }
 
 

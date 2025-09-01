@@ -1,5 +1,6 @@
 package com.ibandorta.FinanciaBank.FinanciaBank.service;
 
+import com.ibandorta.FinanciaBank.FinanciaBank.dto.CuentaBancariaResponseRecord;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.CuentaBancaria;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.User;
 import com.ibandorta.FinanciaBank.FinanciaBank.repository.CuentaBancariaRepository;
@@ -8,6 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
+
+
 
 @Service
 public class CuentaBancariaService {
@@ -42,5 +46,17 @@ public class CuentaBancariaService {
         cuentaBancariaRepository.save(cuenta);
     }
 
+    public List<CuentaBancariaResponseRecord> obtenerCuentas() {
+        return cuentaBancariaRepository.findAll()
+                .stream()
+                .map(cuenta -> new CuentaBancariaResponseRecord(
+                        cuenta.getIban(),
+                        cuenta.getSaldo(),
+                        cuenta.getMoneda(),
+                        cuenta.isActiva()
+                ))
+                .collect(Collectors.toList());
+
+    }
 
 }

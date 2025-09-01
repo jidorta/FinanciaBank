@@ -1,8 +1,8 @@
 package com.ibandorta.FinanciaBank.FinanciaBank.controller;
 
 
-import com.ibandorta.FinanciaBank.FinanciaBank.dto.TransferenciaRequestDTO;
-import com.ibandorta.FinanciaBank.FinanciaBank.dto.TransferenciaResponseDTO;
+import com.ibandorta.FinanciaBank.FinanciaBank.dto.TransferenciaRequestRecord;
+import com.ibandorta.FinanciaBank.FinanciaBank.dto.TransferenciaResponseRecord;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.Transferencia;
 import com.ibandorta.FinanciaBank.FinanciaBank.service.CuentaBancariaService;
 import com.ibandorta.FinanciaBank.FinanciaBank.service.TransferenciaService;
@@ -12,13 +12,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/transferencias")
 public class TransferenciaController  {
+
+    private static final Logger log = LoggerFactory.getLogger(TransferenciaController.class);
 
     private final TransferenciaService transferenciaService;
     private final CuentaBancariaService cuentaBancariaService;
@@ -29,26 +32,32 @@ public class TransferenciaController  {
     }
 
     @PostMapping
-    public ResponseEntity<TransferenciaResponseDTO> realizarTransferencia(
+    public ResponseEntity<TransferenciaResponseRecord> realizarTransferencia(
             @AuthenticationPrincipal UserDetails userDetails,
-            @Valid @RequestBody TransferenciaRequestDTO dto){
+            @Valid @RequestBody TransferenciaRequestRecord dto){
 
+        log.info("Usuario {} solicita transferencia de {} a {}",
+                userDetails.getUsername(),
+                dto.cuentaOrigenId(),
+                dto.cuentaDestinoId());
 
         Transferencia t = transferenciaService.realizarTransferencia(
                 userDetails.getUsername(),
-                dto.getCuentaOrigenId(),
-                dto.getCuentaDestinoId(),
-                dto.getMonto()
+                dto.cuentaOrigenId(),
+                dto.cuentaDestinoId(),
+                dto.monto()
         );
 
-        TransferenciaResponseDTO resp = mapToResponse(t);
+        TransferenciaResponseRecord resp = mapToResponse(t);
+
+        log.info("Transferencia realizada {}", resp);
         return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 
     }
 
     // Get: historial de transferencias del usuario(como emisor/origen)
     @GetMapping
-    public List<TransferenciaResponseDTO> obtenerTransferencias(
+    public List<TransferenciaResponseRecord> obtenerTransferencias(
             @AuthenticationPrincipal UserDetails userDetails){
         return transferenciaService.obtenerTransferenciasPorUsuario(userDetails.getUsername())
                 .stream()
@@ -57,14 +66,14 @@ public class TransferenciaController  {
     }
 
 
-    private TransferenciaResponseDTO mapToResponse(Transferencia t){
-        TransferenciaResponseDTO r = new TransferenciaResponseDTO();
-        r.setId(t.getId());
-        r.setCuentaOrigenId(t.getCuentaOrigen().getId());
-        r.setCuentaDestinoId(t.getCuentaDestino().getId());
-        r.setMonto(t.getMonto());
-        r.setFecha(t.getFecha());
-        return r;
+    private TransferenciaResponseRecord mapToResponse(Transferencia t) {
+        return new TransferenciaResponseRecord(
+                t.getId(),
+                t.getCuentaOrigen().getId(),
+                t.getCuentaDestino().getId(),
+                t.getMonto(),
+                t.getFecha()
+        );
     }
 
 }

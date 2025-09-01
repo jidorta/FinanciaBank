@@ -1,6 +1,5 @@
 package com.ibandorta.FinanciaBank.FinanciaBank.controller;
 
-import com.ibandorta.FinanciaBank.FinanciaBank.dto.UserRequest;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.Role;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.User;
 import com.ibandorta.FinanciaBank.FinanciaBank.model.UserRole;
